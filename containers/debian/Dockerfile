@@ -8,11 +8,12 @@ FROM ${BASE_IMAGE}
 ARG TARGETPLATFORM
 
 # Open Container Initiative labels (no heredoc support)
+ARG CONTAINER_ORGREPO=eic
 LABEL \
 org.opencontainers.image.vendor="Electron-Ion Collider" \
 org.opencontainers.image.authors="Electron-Ion Collider Software Working Groups <eic-software-l-owner@lists.bnl.gov>" \
-org.opencontainers.image.url="https://github.com/eic/containers" \
-org.opencontainers.image.source="https://github.com/eic/containers" \
+org.opencontainers.image.url="https://github.com/${CONTAINER_ORGREPO}/containers" \
+org.opencontainers.image.source="https://github.com/${CONTAINER_ORGREPO}/containers" \
 org.opencontainers.image.documentation="https://eic.github.io" \
 org.opencontainers.image.license="GPL-3.0-or-later"
 LABEL org.opencontainers.image.title="Electron-Ion Collider base image ($TARGETPLATFORM)"
@@ -264,7 +265,7 @@ EOF
 RUN --mount=type=cache,target=/var/cache/spack <<EOF
 set -e
 spack mirror add --scope site --signed spack-${SPACK_VERSION} https://binaries.spack.io/${SPACK_VERSION}
-spack mirror add --scope site --unsigned ghcr-${SPACKPACKAGES_VERSION} oci://ghcr.io/eic/spack-${SPACKPACKAGES_VERSION}
+spack mirror add --scope site --unsigned ghcr-${SPACKPACKAGES_VERSION} oci://ghcr.io/${CONTAINER_ORGREPO}/spack-${SPACKPACKAGES_VERSION}
 spack mirror list
 EOF
 
