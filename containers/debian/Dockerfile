@@ -8,15 +8,15 @@ FROM ${BASE_IMAGE}
 ARG TARGETPLATFORM
 
 # Open Container Initiative labels (no heredoc support)
-ARG CONTAINER_ORGREPO=eic
+ARG CONTAINER_ORGREPO=celeritas-project
 LABEL \
-org.opencontainers.image.vendor="Electron-Ion Collider" \
+org.opencontainers.image.vendor="Electron-Ion Collider, Celeritas Project" \
 org.opencontainers.image.authors="Electron-Ion Collider Software Working Groups <eic-software-l-owner@lists.bnl.gov>" \
 org.opencontainers.image.url="https://github.com/${CONTAINER_ORGREPO}/containers" \
 org.opencontainers.image.source="https://github.com/${CONTAINER_ORGREPO}/containers" \
 org.opencontainers.image.documentation="https://eic.github.io" \
 org.opencontainers.image.license="GPL-3.0-or-later"
-LABEL org.opencontainers.image.title="Electron-Ion Collider base image ($TARGETPLATFORM)"
+LABEL org.opencontainers.image.title="Electron-Ion Collider base image with Celeritas mods ($TARGETPLATFORM)"
 
 COPY bashrc /root/.bashrc
 
@@ -147,8 +147,8 @@ EOF
 
 ## Setup git
 RUN <<EOF
-git config --global user.email "gitlab@eicweb.phy.anl.gov"
-git config --global user.name "EIC Container Build Service"
+git config --global user.email "celeritas-project@users.noreply.github.com"
+git config --global user.name "Celeritas Project"
 git config --global advice.detachedHead false
 git config --global gc.autoDetach false
 git config --global merge.directoryRenames true
@@ -267,28 +267,4 @@ set -e
 spack mirror add --scope site --signed spack-${SPACK_VERSION} https://binaries.spack.io/${SPACK_VERSION}
 spack mirror add --scope site --unsigned ghcr-${SPACKPACKAGES_VERSION} oci://ghcr.io/${CONTAINER_ORGREPO}/spack-${SPACKPACKAGES_VERSION}
 spack mirror list
-EOF
-
-## Setup key4hep-spack (no need for cherry-picks)
-ENV KEY4HEPSPACK_ROOT=${SPACKPACKAGES_ROOT}/repos/key4hep-spack
-ARG KEY4HEPSPACK_ORGREPO="key4hep/key4hep-spack"
-ARG KEY4HEPSPACK_VERSION="main"
-ARG KEY4HEPSPACK_SHA=""
-RUN <<EOF
-set -e
-git clone --filter=tree:0 https://github.com/${KEY4HEPSPACK_ORGREPO}.git ${KEY4HEPSPACK_ROOT}
-git -C ${KEY4HEPSPACK_ROOT} checkout ${KEY4HEPSPACK_SHA:-${KEY4HEPSPACK_VERSION}}
-spack repo add --scope site "${KEY4HEPSPACK_ROOT}"
-EOF
-
-## Setup eic-spack (no need for cherry-picks)
-ENV EICSPACK_ROOT=${SPACKPACKAGES_ROOT}/repos/eic-spack
-ARG EICSPACK_ORGREPO="eic/eic-spack"
-ARG EICSPACK_VERSION="develop"
-ARG EICSPACK_SHA=""
-RUN <<EOF
-set -e
-git clone --filter=tree:0 https://github.com/${EICSPACK_ORGREPO}.git ${EICSPACK_ROOT}
-git -C ${EICSPACK_ROOT} checkout ${EICSPACK_SHA:-${EICSPACK_VERSION}}
-spack repo add --scope site "${EICSPACK_ROOT}"
 EOF

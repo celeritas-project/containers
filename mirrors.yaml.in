@@ -11,6 +11,18 @@ mirrors:
       access_pair:
         id_variable: CI_REGISTRY_USER
         secret_variable: CI_REGISTRY_PASSWORD
+  eic:
+    autopush: true
+    url: oci://ghcr.io/eic/spack-${SPACKPACKAGES_VERSION}
+    signed: false
+    fetch:
+      access_pair:
+        id_variable: GITHUB_REGISTRY_USER
+        secret_variable: GITHUB_REGISTRY_TOKEN
+    push:
+      access_pair:
+        id_variable: GITHUB_REGISTRY_USER
+        secret_variable: GITHUB_REGISTRY_TOKEN
   ghcr:
     autopush: true
     url: oci://ghcr.io/${CONTAINER_ORGREPO}/spack-${SPACKPACKAGES_VERSION}
